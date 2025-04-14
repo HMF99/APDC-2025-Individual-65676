@@ -2,12 +2,10 @@ package pt.unl.fct.di.apdc.firstwebapp.util;
 
 import com.google.cloud.Timestamp;
 import com.google.cloud.datastore.*;
-import java.util.logging.Logger;
 import org.apache.commons.codec.digest.DigestUtils;
 
 public class AppInit {
 
-  private static final Logger LOG = Logger.getLogger(AppInit.class.getName());
   private static final Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
   private static final KeyFactory userKeyFactory = datastore.newKeyFactory().setKind("User");
 
@@ -21,9 +19,6 @@ public class AppInit {
     QueryResults<Entity> admins = datastore.run(adminQuery);
 
     if (admins.hasNext()) {
-      LOG.severe("At least one ADMIN user already exists. Skipping root creation.");
-      Entity admin = admins.next();
-      LOG.info("Existing admin user found: " + admin.getString("user_name"));
       return;
     }
 
@@ -49,6 +44,5 @@ public class AppInit {
         .build();
 
     datastore.put(rootUser);
-    LOG.severe("Root ADMIN user created successfully.");
   }
 }

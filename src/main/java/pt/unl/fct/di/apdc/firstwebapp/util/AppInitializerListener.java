@@ -9,7 +9,6 @@ public class AppInitializerListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        System.out.println("Inicializando o usuário ROOT...");
         AppInit.initRootUser();
     }
 
