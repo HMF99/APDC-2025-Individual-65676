@@ -9,7 +9,12 @@
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
-	
+
+	<listener>
+    <listener-class>pt.unl.fct.di.apdc.firstwebapp.util.AppInitializerListener</listener-class>
+</listener>
+
+
 	
 	<error-page>
 		<error-code>500</error-code>
@@ -20,8 +25,8 @@
 		<error-code>404</error-code>
 		<location>/error/404.html</location>
 	</error-page>
-	
 
+	<!-- Register the Jersey Servlet -->
 	<servlet>
 		<servlet-name>MainServices</servlet-name>
 		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
@@ -48,7 +53,7 @@
 
 		<init-param>
 			<param-name>jersey.config.server.tracing.type</param-name>
-			<param-value>ALL</param-value> <!-- This is a debug utility that should be disabled when code goes to production -->
+			<param-value>ALL</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
@@ -56,5 +61,19 @@
 		<servlet-name>MainServices</servlet-name>
 		<url-pattern>/rest/*</url-pattern>
 	</servlet-mapping>
+
+	<!-- Security Constraint for Restricted Area -->
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Restricted Area</web-resource-name>
+			<url-pattern>/secret/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<!-- Add the Listener to initialize the root user on startup -->
+	
 
 </web-app>
