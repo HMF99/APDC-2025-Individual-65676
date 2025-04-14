@@ -7,12 +7,9 @@ import jakarta.ws.rs.core.Response.Status;
 import pt.unl.fct.di.apdc.firstwebapp.util.PasswordData;
 import org.apache.commons.codec.digest.DigestUtils;
 
-import java.util.logging.Logger;
-
 @Path("/changePassword")
 public class ChangePasswordResource {
 
-  private static final Logger LOG = Logger.getLogger(ChangePasswordResource.class.getName());
   private static final Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
   private static final KeyFactory tokenKeyFactory = datastore.newKeyFactory().setKind("Token");
   private static final KeyFactory userKeyFactory = datastore.newKeyFactory().setKind("User");
@@ -61,7 +58,6 @@ public class ChangePasswordResource {
 
     datastore.put(updatedUser);
 
-    LOG.info("Password updated successfully for user: " + tokenUsername);
     return Response.status(Response.Status.OK).entity("Password changed successfully.").build();
   }
 }

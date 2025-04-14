@@ -10,12 +10,10 @@ import pt.unl.fct.di.apdc.firstwebapp.util.UserData;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 @Path("/listUsers")
 public class ListUsersResource {
 
-  private static final Logger LOG = Logger.getLogger(ListUsersResource.class.getName());
   private static final Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
   private static final KeyFactory tokenKeyFactory = datastore.newKeyFactory().setKind("Token");
 
@@ -34,7 +32,6 @@ public class ListUsersResource {
     String requesterRole = tokenEntity.getString("token_role");
 
     if (requesterRole == null || requesterRole.isEmpty()) {
-      LOG.warning("Missing requester role.");
       return Response.status(Status.BAD_REQUEST).entity("Role is required.").build();
     }
 
@@ -44,11 +41,8 @@ public class ListUsersResource {
     List<UserData> rUsersList = new ArrayList<>();
     List<RegisterData> usersList = new ArrayList<>();
 
-    LOG.info("Query executed. Now processing results...");
-
     while (results.hasNext()) {
       Entity userEntity = results.next();
-      LOG.fine("Processing user: " + userEntity.getKey().getName());
 
       String role = userEntity.contains("user_role") ? userEntity.getString("user_role") : "";
       String profile = userEntity.contains("user_profile") ? userEntity.getString("user_profile") : "";
@@ -56,7 +50,6 @@ public class ListUsersResource {
           : "";
 
       if ("ENDUSER".equals(requesterRole)) {
-        LOG.fine("Checking if user is valid for ENDUSER role...");
         if (!"ENDUSER".equals(role))
           continue;
         if (!"public".equalsIgnoreCase(profile))
@@ -97,18 +90,14 @@ public class ListUsersResource {
     }
     if (requesterRole.equals("ENDUSER")) {
       if (rUsersList.isEmpty()) {
-        LOG.info("No users to list, either due to filters or empty database.");
         return Response.status(Status.NO_CONTENT).entity("No users found.").build();
       }
-      LOG.info("Returning list of users. Total count: " + rUsersList.size());
       return Response.ok(rUsersList).build();
     } else {
       if (usersList.isEmpty()) {
-        LOG.info("No users to list, either due to filters or empty database.");
         return Response.status(Status.NO_CONTENT).entity("No users found.").build();
       }
 
-      LOG.info("Returning list of users. Total count: " + usersList.size());
       return Response.ok(usersList).build();
     }
   }

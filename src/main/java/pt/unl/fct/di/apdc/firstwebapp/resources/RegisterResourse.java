@@ -1,7 +1,5 @@
 package pt.unl.fct.di.apdc.firstwebapp.resources;
 
-import java.util.logging.Logger;
-
 import org.apache.commons.codec.digest.DigestUtils;
 
 import com.google.cloud.Timestamp;
@@ -26,7 +24,6 @@ import pt.unl.fct.di.apdc.firstwebapp.util.RegisterData;
 @Path("/register")
 public class RegisterResourse {
 
-  private static final Logger LOG = Logger.getLogger(RegisterResourse.class.getName());
   private static final Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
 
   public RegisterResourse() {
@@ -35,7 +32,6 @@ public class RegisterResourse {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   public Response registerUser(RegisterData data) {
-    LOG.fine("Attempt to register user: " + data.username);
 
     if (data.role == null || data.role.isEmpty()) {
       data.role = "ENDUSER";
@@ -128,14 +124,12 @@ public class RegisterResourse {
       txn.put(userEntity);
       txn.commit();
 
-      LOG.info("User registered successfully: " + data.username);
       return Response.ok().entity("User successfully registered.").build();
 
     } catch (DatastoreException e) {
       if (txn.isActive()) {
         txn.rollback();
       }
-      LOG.severe("Datastore error: " + e.toString());
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Internal error.").build();
     }
   }
